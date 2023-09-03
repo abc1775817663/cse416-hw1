@@ -9,11 +9,11 @@ export default function Discovery()
     const [type, setType] = useState("");
 
     const handleChange = (event) => {
-        if(event.target.files)
+        if(event.target.files && event.target.files.length > 0)
         {
             file = event.target.files[0];
 
-            let ext = file.name.split('.').pop()
+            let ext = file.name.split('.').pop();
 
             switch(ext)
             {
@@ -32,6 +32,8 @@ export default function Discovery()
                     break;
             }
         }
+        else
+            setType("");
     };
 
     return (
