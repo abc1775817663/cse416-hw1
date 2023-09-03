@@ -1,39 +1,67 @@
 "use client";
 
+import './stylesheet.css'
 import { useState } from "react";
+
+import { handleShapefile } from './handleShapefile';
+import { handleGeoJson } from './handleGeoJson';
+import { handleKeyhole } from './handleKeyhole';
+
+const SUPPORTED_TYPES = {
+    "shp": "Shapefile",
+    "json": "GeoJSON",
+    "kml": "KML",
+    "kmz": "KML"
+};
+
+const INITIAL_STATE = {
+    hasFile: false,
+    type: ""
+};
+
+let svg = <svg id="map-display" width="600" height="400"></svg>;
+
 
 export default function Discovery()
 {
-    let file = null;
-    
-    const [type, setType] = useState("");
+    const [state, setState] = useState(INITIAL_STATE);
 
-    const handleChange = (event) => {
+    function handleChange(event)
+    {
         if(event.target.files && event.target.files.length > 0)
         {
-            file = event.target.files[0];
+            let file = event.target.files[0];
 
             let ext = file.name.split('.').pop();
+            let type = SUPPORTED_TYPES[ext];
 
-            switch(ext)
+            switch(type)
             {
-                case "shp":
-                    setType("Shapefile");
+                case "Shapefile":
+                    handleShapefile(file);
                     break;
-                case "json":
-                    setType("GeoJSON");
+                case "GeoJSON":
+                    handleGeoJson(file);
                     break;
-                case "kml":
-                case "kmz":
-                    setType("KML");
+                case "KML":
+                    handleKeyhole(file);
                     break;
                 default:
-                    setType("invalid");
                     break;
             }
+
+            setState({
+                hasFile: true,
+                type
+            });
         }
         else
-            setType("");
+        {
+            setState({
+                ...state,
+                hasFile: false
+            });
+        }
     };
 
     return (
@@ -41,9 +69,14 @@ export default function Discovery()
             <p>Browse for <b>Shapefile</b>, <b>GeoJSON</b>, or <b>Keyhole (KML)</b> file:</p>
             <input 
                 type="file"
+                accept={Object.keys(SUPPORTED_TYPES).reduce((acc, current) => acc + "." + current + ",", "")}
                 onChange={handleChange}
                 />
-            {type != "" ? <p>Type: {type}</p> : null}
+            {state.hasFile ? 
+                <div>
+                    <p>Type: {state.type}</p>
+                    {svg}
+                </div> : null}
         </div>
     );
 }
