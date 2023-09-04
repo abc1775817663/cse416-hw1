@@ -46,6 +46,7 @@ export function handleGeoJson(file)
             console.log(area, labelThreshold);
         }
     }
+
     function calculateMultiPolygonsArea(multipolygons){
         let area = 0;
         multipolygons.forEach(multipolygon => {
@@ -87,8 +88,15 @@ export function handleGeoJson(file)
     }
 
     
-    function drawPolygon(display, polygon)
+    const colorPalette = ['#FF5733', '#FFBD33', '#33FF57', '#33B4FF', '#FF33E6', '#A033FF', '#33FFA0', '#FFD333'];
+    const countryColors = {};
+
+
+    function drawPolygon(display, polygon, countryName)
     {
+        const countryColor = countryColors[countryName] || getRandomColor();
+        countryColors[countryName] = countryColor;
+
         let polygonsvg = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         let points = "";
         
@@ -107,7 +115,7 @@ export function handleGeoJson(file)
 
         polygonsvg.style.stroke = "black";
         polygonsvg.style.strokeWidth = "1px";
-        polygonsvg.style.fill = "none";
+        polygonsvg.style.fill = countryColor;
 
         display.appendChild(polygonsvg);
     }
@@ -117,10 +125,9 @@ export function handleGeoJson(file)
         const obj = JSON.parse(event.target.result);
         let display = document.getElementById("map-display");
         display.innerHTML = "";
-        for(let i = 0; i < obj.features.length; i++)
-        {
+        for (let i = 0; i < obj.features.length; i++) {
             let name = obj.features[i].properties.name;
-            let label = {x: obj.features[i].properties.label_x, y: obj.features[i].properties.label_y};
+            let label = { x: obj.features[i].properties.label_x, y: obj.features[i].properties.label_y };
             let geometry = obj.features[i].geometry;
             console.log(name);
             console.log(geometry);
@@ -129,7 +136,8 @@ export function handleGeoJson(file)
                 case "Polygon":
                     {
                         geometry.coordinates.forEach(polygon => {
-                            drawPolygon(display, polygon);
+                            // drawPolygon(display, polygon);
+                            drawPolygon(display, polygon, name);
                         });
                     }
                     break;
@@ -137,7 +145,9 @@ export function handleGeoJson(file)
                     {
                         geometry.coordinates.forEach(multipolygon => {
                             multipolygon.forEach(polygon => {
-                                drawPolygon(display, polygon);
+                                // drawPolygon(display, polygon);
+                                drawPolygon(display, polygon, name);
+
                             });
                         });
                     }
@@ -170,5 +180,9 @@ export function handleGeoJson(file)
                 child.setAttribute("transform", `translate(${xTranslate} ${yTranslate}) scale(${scale} ${scale})`);
         });
 
+    }
+
+    function getRandomColor() {
+        return colorPalette[Math.floor(Math.random() * colorPalette.length)];
     }
 }
