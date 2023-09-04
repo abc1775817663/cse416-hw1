@@ -8,6 +8,7 @@ export function handleGeoJson(file)
     let yRange = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY};
     
     function drawLabel(display, name, label, geometry) {
+
         let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.textContent = name;
         let fontSize = 12;
@@ -115,6 +116,7 @@ export function handleGeoJson(file)
     {
         const obj = JSON.parse(event.target.result);
         let display = document.getElementById("map-display");
+        display.innerHTML = "";
         for(let i = 0; i < obj.features.length; i++)
         {
             let name = obj.features[i].properties.name;
