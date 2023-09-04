@@ -35,7 +35,7 @@ export function handleGeoJson(file)
                     return;
         }
         
-        const labelThreshold = fontSize * name.length; 
+        const labelThreshold = fontSize * name.length / 2;
     
         if (area >= labelThreshold) {
             text.setAttribute("x", label.x);
@@ -117,7 +117,9 @@ export function handleGeoJson(file)
         polygonsvg.style.strokeWidth = "1px";
         polygonsvg.style.fill = countryColor;
 
-        display.appendChild(polygonsvg);
+        // append at start to avoid blocking text
+        display.insertBefore(polygonsvg, display.children[0]);
+        // display.appendChild(polygonsvg);
     }
 
     function onReaderLoad(event)
@@ -184,6 +186,6 @@ export function handleGeoJson(file)
 
     function getRandomColor() {
         // return colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        return `hsl(${Math.random() * 360}, ${100}%, ${50}%)`;
+        return `hsl(${Math.random() * 360}, ${100}%, ${70}%)`;
     }
 }
