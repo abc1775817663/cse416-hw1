@@ -88,7 +88,7 @@ export function handleGeoJson(file)
     }
 
     
-    const colorPalette = ['#FF5733', '#FFBD33', '#33FF57', '#33B4FF', '#FF33E6', '#A033FF', '#33FFA0', '#FFD333'];
+    // const colorPalette = ['#FF5733', '#FFBD33', '#33FF57', '#33B4FF', '#FF33E6', '#A033FF', '#33FFA0', '#FFD333'];
     const countryColors = {};
 
 
@@ -183,6 +183,7 @@ export function handleGeoJson(file)
     }
 
     function getRandomColor() {
-        return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        // return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        return `hsl(${Math.random() * 360}, ${100}%, ${50}%)`;
     }
 }
