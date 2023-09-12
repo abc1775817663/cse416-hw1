@@ -1,11 +1,11 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
-  
-
+  const mapRef = useRef(null); // To store the map instance
+  const geoJsonLayerRef = useRef(null); // To store the GeoJSON layer
 
   useEffect(() => {
     const reader = new FileReader();
@@ -23,13 +23,21 @@ export default function GeoJSONDisplay(props) {
   }, [props.file]);
 
   useEffect(() => {
-    console.log("geoJsonData:", geoJsonData);
-    if (geoJsonData) {
+    // Initialize the map if it's not already initialized
+    if (!mapRef.current) {
+      mapRef.current = L.map("map" + props.mapId).setView([0, 0], 2);
+      // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current); // Add base layer
+    }
 
-      let map = L.map("map" + props.mapId).setView([0, 0], 2);
-      
-      // Add GeoJSON data to the map
-      L.geoJSON(geoJsonData).addTo(map);
+    // Remove old GeoJSON layer if it exists
+    if (geoJsonLayerRef.current) {
+      mapRef.current.removeLayer(geoJsonLayerRef.current);
+    }
+
+    // Add new GeoJSON layer if new data exists
+    if (geoJsonData) {
+      geoJsonLayerRef.current = L.geoJSON(geoJsonData);
+      geoJsonLayerRef.current.addTo(mapRef.current);
     }
   }, [geoJsonData]);
 
