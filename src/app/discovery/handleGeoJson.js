@@ -37,14 +37,23 @@ export default function GeoJSONDisplay(props) {
     // Add new GeoJSON layer if new data exists
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+        //add label to each feature
         onEachFeature: (feature, layer) => {
-          if(feature.properties && feature.properties.name)
-          {
-            let marker = new L.marker([feature.properties.label_y, feature.properties.label_x], {opacity: 0.01});
-            marker.bindTooltip(feature.properties.name, {permanent: true, className: "my-label", offset: [0, 0] });
-            marker.addTo(mapRef.current);
-            layer.bindPopup(feature.properties.name);
-          }
+          var label = L.marker([feature.properties.label_y, feature.properties.label_x], {
+            icon: L.divIcon({
+                className: 'countryLabel',
+                html: feature.properties.name,
+                iconSize: [1000, 0],
+                iconAnchor: [0, 0]
+            })
+        }).addTo(mapRef.current);
+          // if(feature.properties && feature.properties.name)
+          // {
+          //   let marker = new L.marker([feature.properties.label_y, feature.properties.label_x], {opacity: 0.01});
+          //   marker.bindTooltip(feature.properties.name, {permanent: true, className: "my-label", offset: [0, 0] });
+          //   marker.addTo(mapRef.current);
+          //   layer.bindPopup(feature.properties.name);
+          // }
         }
       });
       geoJsonLayerRef.current.addTo(mapRef.current);
@@ -54,7 +63,7 @@ export default function GeoJSONDisplay(props) {
   return (
     <div
       id={"map" + props.mapId}
-      style={{ width: "100%", height: "400px" }}
+      style={{ width: "100%", height: "600px" }}
     ></div>
   );
 }
