@@ -2,10 +2,11 @@
 
 import './stylesheet.css'
 import { useState, useEffect } from "react";
+import GeoJSONDisplay from './handleGeoJson';
 
-import { handleShapefile } from './handleShapefile';
-import { handleGeoJson } from './handleGeoJson';
-import { handleKeyhole } from './handleKeyhole';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
 
 const SUPPORTED_TYPES = {
     "shp": "Shapefile",
@@ -15,11 +16,10 @@ const SUPPORTED_TYPES = {
 };
 
 const INITIAL_STATE = {
-    hasFile: false,
-    type: ""
+    file: null,
+    type: "",
+    mapId: 0
 };
-
-let svg = <svg id="map-display" width="800" height="600"></svg>;
 
 
 export default function Discovery()
@@ -33,50 +33,45 @@ export default function Discovery()
             let file = event.target.files[0];
 
             let ext = file.name.split('.').pop();
+            if (!SUPPORTED_TYPES.hasOwnProperty(ext)){
+                alert("FILE TYPE NOT SUPPORTED!")
+            }
             let type = SUPPORTED_TYPES[ext];
 
-            switch(type)
+            if (type)
             {
-                case "Shapefile":
-                    handleShapefile(file);
-                    break;
-                case "GeoJSON":
-                    handleGeoJson(file);
-                    break;
-                case "KML":
-                    handleKeyhole(file);
-                    break;
-                default:
-                    break;
+                setState({
+                    ...state,
+                    file,
+                    type,
+                    mapId: state.mapId + 1
+                });
             }
-
-            setState({
-                hasFile: true,
-                type
-            });
         }
         else
         {
             setState({
                 ...state,
-                hasFile: false
+                file: null
             });
         }
     };
 
     return (
         <div>
-            <p>Browse for <b>Shapefile</b>, <b>GeoJSON</b>, or <b>Keyhole (KML)</b> file:</p>
-            <input 
-                type="file"
-                accept={Object.keys(SUPPORTED_TYPES).reduce((acc, current) => acc + "." + current + ",", "")}
-                onChange={handleChange}
-                />
-            {state.hasFile ? 
-                <div>
-                    <p>Type: {state.type}</p>
-                    {svg}
-                </div> : null}
+          <p>Browse for <b>Shapefile</b>, <b>GeoJSON</b>, or <b>Keyhole (KML)</b> file:</p>
+          <input 
+            type="file"
+            accept={Object.keys(SUPPORTED_TYPES).reduce((acc, current) => acc + "." + current + ",", "")}
+            onChange={handleChange}
+          />
+          {state.file ? 
+            <div>
+              <p>Type: {state.type}</p>
+              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={state.mapId}/>}
+            </div>
+            : null}
         </div>
-    );
+      )
+      
 }
