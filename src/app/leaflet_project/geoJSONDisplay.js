@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
+  
 
 
   useEffect(() => {
@@ -24,13 +25,13 @@ export default function GeoJSONDisplay(props) {
   useEffect(() => {
     console.log("geoJsonData:", geoJsonData);
     if (geoJsonData) {
-      const map = L.map("map").setView([0, 0], 2);
 
+      let map = L.map("map" + props.mapId).setView([0, 0], 2);
+      
       // Add GeoJSON data to the map
       L.geoJSON(geoJsonData).addTo(map);
-
     }
   }, [geoJsonData]);
 
-  return <div id="map" style={{ width: "100%", height: "400px" }}></div>;
+  return <div id={"map" + props.mapId} style={{ width: "100%", height: "400px" }}></div>;
 }

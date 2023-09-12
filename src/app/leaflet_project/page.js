@@ -21,14 +21,13 @@ const INITIAL_STATE = {
 };
 
 
-let svg = <svg id="map-display" width="800" height="600">
-    <div id="map"></div>
-</svg>;
+
 
 
 export default function Discovery()
 {
     const [state, setState] = useState(INITIAL_STATE);
+    const [mapId, setMapId] = useState(0);
 
     function handleChange(event)
     {
@@ -37,7 +36,12 @@ export default function Discovery()
             let file = event.target.files[0];
 
             let ext = file.name.split('.').pop();
+            if (!SUPPORTED_TYPES.hasOwnProperty(fileExtension)){
+                alert("FILE TYPE NOT SUPPORTED!")
+            }
             let type = SUPPORTED_TYPES[ext];
+
+            if (type)
 
             setState({
                 file,
@@ -51,6 +55,7 @@ export default function Discovery()
                 file: null
             });
         }
+        setMapId(mapId+1);
     };
 
     return (
@@ -64,11 +69,10 @@ export default function Discovery()
           {state.file ? 
             <div>
               <p>Type: {state.type}</p>
-              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} />}
-              {svg}
+              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={mapId}/>}
             </div>
             : null}
         </div>
-      );
+      )
       
 }
