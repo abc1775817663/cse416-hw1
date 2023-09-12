@@ -1,7 +1,7 @@
 "use client";
 
 import './stylesheet.css'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { handleShapefile } from './handleShapefile';
 import { handleGeoJson } from './handleGeoJson';
@@ -19,7 +19,7 @@ const INITIAL_STATE = {
     type: ""
 };
 
-let svg = <svg id="map-display" width="600" height="400"></svg>;
+let svg = <svg id="map-display" width="800" height="600"></svg>;
 
 
 export default function Discovery()
