@@ -17,14 +17,14 @@ const SUPPORTED_TYPES = {
 
 const INITIAL_STATE = {
     file: null,
-    type: ""
+    type: "",
+    mapId: 0
 };
 
 
 export default function Discovery()
 {
     const [state, setState] = useState(INITIAL_STATE);
-    const [mapId, setMapId] = useState(0);
 
     function handleChange(event)
     {
@@ -33,17 +33,20 @@ export default function Discovery()
             let file = event.target.files[0];
 
             let ext = file.name.split('.').pop();
-            if (!SUPPORTED_TYPES.hasOwnProperty(fileExtension)){
+            if (!SUPPORTED_TYPES.hasOwnProperty(ext)){
                 alert("FILE TYPE NOT SUPPORTED!")
             }
             let type = SUPPORTED_TYPES[ext];
 
             if (type)
-
-            setState({
-                file,
-                type
-            });
+            {
+                setState({
+                    ...state,
+                    file,
+                    type,
+                    mapId: state.mapId + 1
+                });
+            }
         }
         else
         {
@@ -52,7 +55,6 @@ export default function Discovery()
                 file: null
             });
         }
-        setMapId(mapId+1);
     };
 
     return (
@@ -66,7 +68,7 @@ export default function Discovery()
           {state.file ? 
             <div>
               <p>Type: {state.type}</p>
-              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={mapId}/>}
+              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={state.mapId}/>}
             </div>
             : null}
         </div>
