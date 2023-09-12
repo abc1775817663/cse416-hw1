@@ -87,14 +87,30 @@ export function handleGeoJson(file)
         return Math.abs(area) / 2;
     }
 
-    
+    const storedCountryColors = JSON.parse(localStorage.getItem('countryColors')) || {};
+
     // const colorPalette = ['#FF5733', '#FFBD33', '#33FF57', '#33B4FF', '#FF33E6', '#A033FF', '#33FFA0', '#FFD333'];
     const countryColors = {};
+
+    function getColorForCountry(countryName) {
+        if (countryColors[countryName]) {
+            return countryColors[countryName];
+        } else if (storedCountryColors[countryName]) {
+            countryColors[countryName] = storedCountryColors[countryName];
+            // return countryColors[countryName];
+        } else {
+            countryColors[countryName] = getRandomColor();
+            storedCountryColors[countryName]=countryColors[countryName];
+        }
+        return countryColors[countryName];
+    }
 
 
     function drawPolygon(display, polygon, countryName)
     {
-        const countryColor = countryColors[countryName] || getRandomColor();
+        const countryColor = getColorForCountry(countryName);
+
+        // const countryColor = countryColors[countryName] || getRandomColor();
         countryColors[countryName] = countryColor;
 
         let polygonsvg = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
@@ -115,6 +131,8 @@ export function handleGeoJson(file)
 
         polygonsvg.style.stroke = "black";
         polygonsvg.style.strokeWidth = "1px";
+        // polygonsvg.style.fill = countryColor;
+
         polygonsvg.style.fill = countryColor;
 
         display.appendChild(polygonsvg);
@@ -184,6 +202,8 @@ export function handleGeoJson(file)
 
     function getRandomColor() {
         // return colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        return `hsl(${Math.random() * 360}, ${100}%, ${50}%)`;
+        return `hsl(${Math.random() * 360}, ${100}%, ${75}%)`; //saturation, lightness
     }
+
+    localStorage.setItem('countryColors', JSON.stringify(countryColors));
 }
