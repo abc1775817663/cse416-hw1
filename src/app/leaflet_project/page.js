@@ -21,9 +21,6 @@ const INITIAL_STATE = {
 };
 
 
-
-
-
 export default function Discovery()
 {
     const [state, setState] = useState(INITIAL_STATE);
