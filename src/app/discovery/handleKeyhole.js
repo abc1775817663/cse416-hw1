@@ -30,7 +30,6 @@ export default function KeyholeDisplay(props) {
         console.error("Error parsing file:", error);
       }
     };
-
     reader.readAsText(props.file);
   }, [props.file, props.fileType]);
 
@@ -38,7 +37,6 @@ export default function KeyholeDisplay(props) {
     if (!mapRef.current) {
       mapRef.current = L.map("map" + props.mapId);
     }
-
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
@@ -63,7 +61,6 @@ export default function KeyholeDisplay(props) {
       });
 
       geoJsonLayerRef.current.addTo(mapRef.current);
-
       fitMapToGeoJsonBounds();
     }
   }, [geoJsonData]);

@@ -23,7 +23,6 @@ const INITIAL_STATE = {
   type: ""
 };
 
-
 export default function Discovery() {
   const [state, setState] = useState(INITIAL_STATE);
 
@@ -54,7 +53,8 @@ export default function Discovery() {
   };
 
   return (
-    <div>
+    <div className="discovery-container">
+      <h1>File Discovery</h1>
       <p>Browse for <b>Shapefile</b>, <b>GeoJSON</b>, or <b>Keyhole (KML)</b> file:</p>
       <input
         type="file"
@@ -62,7 +62,7 @@ export default function Discovery() {
         onChange={handleChange}
       />
       {state.file ?
-        <div>
+        <div className="file-details">
           <p>Type: {state.type}</p>
           {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} />}
           {state.type === "KML" && <KeyholeDisplay file={state.file} />}
@@ -71,5 +71,4 @@ export default function Discovery() {
         : null}
     </div>
   )
-
 }

@@ -10,7 +10,6 @@ export default function GeoJSONDisplay(props) {
 
   useEffect(() => {
     const reader = new FileReader();
-
     reader.onload = function (event) {
       try {
         const jsonData = JSON.parse(event.target.result);
