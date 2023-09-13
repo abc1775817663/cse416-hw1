@@ -6,6 +6,10 @@ import shp from "shpjs";
 export default function ShapefileDisplay(props) {
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
+  const markers = useRef([]); 
+  
+
+  
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -16,8 +20,11 @@ export default function ShapefileDisplay(props) {
 
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
-      
     }
+    markers.current.forEach((marker) => {
+      mapRef.current.removeLayer(marker);
+    });
+    markers.current = [];
 
     const reader = new FileReader();
     reader.onload = async function (event) {
@@ -26,7 +33,7 @@ export default function ShapefileDisplay(props) {
           { features: [] },
           {
             onEachFeature: (feature, layer) => {
-                const label = L.marker(layer.getBounds().getCenter(), {
+              const label = L.marker(layer.getBounds().getCenter(), {
                   icon: L.divIcon({
                     className: 'countryLabel',
                     html: feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.NAME_0,
@@ -34,9 +41,11 @@ export default function ShapefileDisplay(props) {
                     iconAnchor: [0, 0]
                   })
                 }).addTo(mapRef.current);
-              }
+                markers.current.push(label);
+              } 
           }
         ).addTo(mapRef.current);
+
 
         const data = await shp(event.target.result);
 

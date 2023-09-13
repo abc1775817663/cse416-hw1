@@ -8,6 +8,8 @@ export default function KeyholeDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
+  const markers = useRef([]); 
+
 
 
   useEffect(() => {
@@ -45,6 +47,10 @@ export default function KeyholeDisplay(props) {
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
+    markers.current.forEach((marker) => {
+      mapRef.current.removeLayer(marker);
+    });
+    markers.current = [];
 
     if (geoJsonData) {
         console.log(geoJsonData);
@@ -58,6 +64,7 @@ export default function KeyholeDisplay(props) {
               iconAnchor: [0, 0]
             })
           }).addTo(mapRef.current);
+          markers.current.push(label);
         }
       });
 

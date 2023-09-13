@@ -6,6 +6,7 @@ export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const mapRef = useRef(null); // To store the map instance
   const geoJsonLayerRef = useRef(null); // To store the GeoJSON layer
+  const markers = useRef([]);
 
   useEffect(() => {
     const reader = new FileReader();
@@ -33,6 +34,10 @@ export default function GeoJSONDisplay(props) {
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
+    markers.current.forEach((marker) => {
+      mapRef.current.removeLayer(marker);
+    });
+    markers.current = [];
 
     // Add new GeoJSON layer if new data exists
     if (geoJsonData) {
@@ -54,6 +59,8 @@ export default function GeoJSONDisplay(props) {
           //   marker.addTo(mapRef.current);
           //   layer.bindPopup(feature.properties.name);
           // }
+
+          markers.current.push(label);
         }
       });
       geoJsonLayerRef.current.addTo(mapRef.current);
