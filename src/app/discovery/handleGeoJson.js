@@ -42,7 +42,7 @@ export default function GeoJSONDisplay(props) {
     // Add new GeoJSON layer if new data exists
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-        //add label to each feature
+        // Add label to each feature
         onEachFeature: (feature, layer) => {
           var label = L.marker([feature.properties.label_y, feature.properties.label_x], {
             icon: L.divIcon({
@@ -52,18 +52,17 @@ export default function GeoJSONDisplay(props) {
               iconAnchor: [0, 0]
             })
           }).addTo(mapRef.current);
-          // if(feature.properties && feature.properties.name)
-          // {
-          //   let marker = new L.marker([feature.properties.label_y, feature.properties.label_x], {opacity: 0.01});
-          //   marker.bindTooltip(feature.properties.name, {permanent: true, className: "my-label", offset: [0, 0] });
-          //   marker.addTo(mapRef.current);
-          //   layer.bindPopup(feature.properties.name);
-          // }
-
           markers.current.push(label);
         }
       });
+
       geoJsonLayerRef.current.addTo(mapRef.current);
+
+      // Calculate the bounds of the GeoJSON layer
+      const bounds = geoJsonLayerRef.current.getBounds();
+
+      // Fit the map to the bounds of the GeoJSON layer
+      mapRef.current.fitBounds(bounds);
     }
   }, [geoJsonData]);
 

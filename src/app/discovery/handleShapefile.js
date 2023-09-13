@@ -19,9 +19,12 @@ export default function ShapefileDisplay(props) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
 
-    [...countryMarkers.current, ...stateMarkers.current, ...cityMarkers.current].forEach((marker) => {
+    const allMarkers = [...countryMarkers.current, ...stateMarkers.current, ...cityMarkers.current];
+
+    allMarkers.forEach((marker) => {
       mapRef.current.removeLayer(marker);
     });
+
     countryMarkers.current = [];
     stateMarkers.current = [];
     cityMarkers.current = [];
@@ -44,9 +47,7 @@ export default function ShapefileDisplay(props) {
                   })
                 });
                 countryMarkers.current.push(countryLabel);
-
-              }
-              else if (feature.properties.NAME_1) {
+              } else if (feature.properties.NAME_1) {
                 const stateLabel = L.marker(layer.getBounds().getCenter(), {
                   icon: L.divIcon({
                     className: 'stateLabel',
@@ -56,8 +57,7 @@ export default function ShapefileDisplay(props) {
                   })
                 });
                 stateMarkers.current.push(stateLabel);
-              }
-              else if (feature.properties.NAME_0) {
+              } else if (feature.properties.NAME_0) {
                 const cityLabel = L.marker(layer.getBounds().getCenter(), {
                   icon: L.divIcon({
                     className: 'cityLabel',
@@ -70,6 +70,12 @@ export default function ShapefileDisplay(props) {
               }
             }
           }).addTo(mapRef.current);
+
+          // Calculate the bounds of the GeoJSON layer
+          const bounds = geoJsonLayerRef.current.getBounds();
+
+          // Fit the map to the bounds of the GeoJSON layer
+          mapRef.current.fitBounds(bounds);
 
           // Add zoom listener here
           mapRef.current.on('zoomend', function () {
@@ -95,7 +101,9 @@ export default function ShapefileDisplay(props) {
             } else {
               cityMarkers.current.forEach(marker => marker.addTo(mapRef.current));
             }
-          });
+          }
+          );
+
         } else {
           console.error("Shapefile data is null or invalid.");
         }
