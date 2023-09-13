@@ -9,38 +9,42 @@ export default function ShapefileDisplay(props) {
   const geoJsonLayerRef = useRef(null); // To store the GeoJSON layer
 
   useEffect(() => {
+    if (!mapRef.current) {
+      mapRef.current = L.map("map" + props.mapId).setView([0, 0], 2);
+    }
+  
     const reader = new FileReader();
-
-    reader.onload = function (event) {
+  
+    reader.onload = async function (event) {
       try {
         const geo = L.geoJson(
-            { features: [] },
-            {
-              onEachFeature: function popUp(f, l) {
-                var out = [];
-                if (f.properties) {
-                  for (var key in f.properties) {
-                    out.push(key + ": " + f.properties[key]);
-                  }
-                  l.bindPopup(out.join("<br />"));
-                }
-              }
-            }
-          ).addTo(map);
-
-          shp(event.target.result).then(function (data) {
-            geo.addData(data);
-          });
-
-        // const jsonData = JSON.parse();
-        // setGeoJsonData(jsonData);
+          { features: [] },
+          {
+            onEachFeature: function popUp(f, l) {
+            },
+          }
+        ).addTo(mapRef.current);
+  
+        const data = await shp(event.target.result);
+        
+        if (data) {
+          geo.addData(data);
+        } else {
+          console.error("Shapefile data is null or invalid.");
+        }
+        
+        console.log(geo);
+        console.log(data);
+  
       } catch (error) {
-        console.error("Error parsing GeoJSON:", error);
+        console.error("Error:", error);
       }
     };
-
+  
     reader.readAsArrayBuffer(props.file);
+  
   }, [props.file]);
+  
 
 //   useEffect(() => {
 //     // Initialize the map if it's not already initialized
