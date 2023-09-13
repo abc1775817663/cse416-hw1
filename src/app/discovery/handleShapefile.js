@@ -4,14 +4,16 @@ import React, { useEffect, useRef } from "react";
 import shp from "shpjs";
 
 export default function ShapefileDisplay(props) {
-  const mapRef = useRef(null); // To store the map instance
-  const geoJsonLayerRef = useRef(null); // To store the GeoJSON layer
+  const mapRef = useRef(null);
+  const geoJsonLayerRef = useRef(null);
 
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map("map" + props.mapId).setView([0, 0], 2);
     }
+
     // Remove old GeoJSON layer if it exists
+
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
