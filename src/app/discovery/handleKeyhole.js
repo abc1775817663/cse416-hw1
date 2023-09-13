@@ -2,7 +2,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useState, useRef } from "react";
 import tj from 'togeojson';
-import { DOMParser } from 'xmldom';
+// import { DOMParser } from 'xmldom';
 
 export default function KeyholeDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -16,10 +16,12 @@ export default function KeyholeDisplay(props) {
     reader.onload = function (event) {
       try {
         let jsonData;
+          console.log(typeof(event.target.result))
           const parser = new DOMParser();
-          const kml = parser.parseFromString(event.target.ressult, 'text/xml');
-          console.log(event.target)
+          const kml = parser.parseFromString(event.target.result, 'text/xml');
+        //   console.log(event.target)
           console.log("Bewtween parse")
+          console.log(typeof(kml))
 
         //   const kml = new DOMParser().parseFromString(fs.readFileSync("foo.kml", "utf8"));
 
@@ -45,9 +47,10 @@ export default function KeyholeDisplay(props) {
     }
 
     if (geoJsonData) {
+        console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
-          const label = L.marker([feature.properties.label_y, feature.properties.label_x], {
+          const label = L.marker(layer.getBounds().getCenter(), {
             icon: L.divIcon({
               className: 'countryLabel',
               html: feature.properties.name,
