@@ -23,6 +23,8 @@ export default function GeoJSONDisplay(props) {
   }, [props.file]);
 
   useEffect(() => {
+    let center;
+    
     // Initialize the map if it's not already initialized
     if (!mapRef.current) {
       mapRef.current = L.map("map" + props.mapId).setView([0, 0], 2);
@@ -57,6 +59,8 @@ export default function GeoJSONDisplay(props) {
         }
       });
       geoJsonLayerRef.current.addTo(mapRef.current);
+      center = mapRef.current.getCenter();
+      console.log(center);
     }
   }, [geoJsonData]);
 
