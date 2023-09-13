@@ -3,6 +3,7 @@
 import './stylesheet.css'
 import { useState, useEffect } from "react";
 import GeoJSONDisplay from './handleGeoJson';
+import KeyholeDisplay from './handleKeyhole';
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -69,6 +70,7 @@ export default function Discovery()
             <div>
               <p>Type: {state.type}</p>
               {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={state.mapId}/>}
+              {state.type === "KML" && <KeyholeDisplay file={state.file} mapId={state.mapId}/>}
             </div>
             : null}
         </div>
