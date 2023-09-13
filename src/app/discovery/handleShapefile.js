@@ -16,6 +16,7 @@ export default function ShapefileDisplay(props) {
 
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
+      
     }
 
     const reader = new FileReader();
@@ -24,18 +25,30 @@ export default function ShapefileDisplay(props) {
         geoJsonLayerRef.current = L.geoJson(
           { features: [] },
           {
-            onEachFeature: function popUp(f, l) {
-            },
+            onEachFeature: (feature, layer) => {
+                const label = L.marker(layer.getBounds().getCenter(), {
+                  icon: L.divIcon({
+                    className: 'countryLabel',
+                    html: feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.NAME_0,
+                    iconSize: [1000, 0],
+                    iconAnchor: [0, 0]
+                  })
+                }).addTo(mapRef.current);
+              }
           }
         ).addTo(mapRef.current);
+
         const data = await shp(event.target.result);
+
         if (data) {
           geoJsonLayerRef.current.addData(data);
         } else {
           console.error("Shapefile data is null or invalid.");
         }
+
         console.log(geoJsonLayerRef.current);
         console.log(data);
+
       } catch (error) {
         console.error("Error:", error);
       }
