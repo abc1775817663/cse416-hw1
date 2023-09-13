@@ -19,7 +19,6 @@ export default function ShapefileDisplay(props) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
 
-    // Clear existing markers
     [...countryMarkers.current, ...stateMarkers.current, ...cityMarkers.current].forEach((marker) => {
       mapRef.current.removeLayer(marker);
     });
@@ -77,7 +76,16 @@ export default function ShapefileDisplay(props) {
             const zoom = mapRef.current.getZoom();
 
             // Clear all markers first
-            [...countryMarkers.current, ...stateMarkers.current, ...cityMarkers.current].forEach(marker => mapRef.current.removeLayer(marker));
+            const allMarkers = [
+              ...countryMarkers.current,
+              ...stateMarkers.current,
+              ...cityMarkers.current
+            ];
+
+            // Loop through each marker and remove it from the map
+            allMarkers.forEach((marker) => {
+              mapRef.current.removeLayer(marker);
+            });
 
             // Add markers based on zoom level
             if (zoom > 7) {
