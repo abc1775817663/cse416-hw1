@@ -16,17 +16,17 @@ export default function KeyholeDisplay(props) {
     reader.onload = function (event) {
       try {
         let jsonData;
-          console.log(typeof(event.target.result))
+          console.log(typeof(event.target.result));
           const parser = new DOMParser();
           const kml = parser.parseFromString(event.target.result, 'text/xml');
-        //   console.log(event.target)
-          console.log("Bewtween parse")
-          console.log(typeof(kml))
+        //   console.log(event.target);
+          console.log("Bewtween parse");
+          console.log(typeof(kml));
 
         //   const kml = new DOMParser().parseFromString(fs.readFileSync("foo.kml", "utf8"));
 
           jsonData = tj.kml(kml);
-          console.log("Successfully parsed from kml to geojson")
+          console.log("Successfully parsed from kml to geojson");
         
         setGeoJsonData(jsonData);
       } catch (error) {

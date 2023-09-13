@@ -4,6 +4,7 @@ import './stylesheet.css'
 import { useState, useEffect } from "react";
 import GeoJSONDisplay from './handleGeoJson';
 import KeyholeDisplay from './handleKeyhole';
+import ShapefileDisplay from './handleShapefile';
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -11,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 
 const SUPPORTED_TYPES = {
     "shp": "Shapefile",
+    "zip": "Shapefile",
     "json": "GeoJSON",
     "kml": "KML",
     "kmz": "KML"
@@ -18,8 +20,7 @@ const SUPPORTED_TYPES = {
 
 const INITIAL_STATE = {
     file: null,
-    type: "",
-    mapId: 0
+    type: ""
 };
 
 
@@ -44,8 +45,7 @@ export default function Discovery()
                 setState({
                     ...state,
                     file,
-                    type,
-                    mapId: state.mapId + 1
+                    type
                 });
             }
         }
@@ -69,8 +69,9 @@ export default function Discovery()
           {state.file ? 
             <div>
               <p>Type: {state.type}</p>
-              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} mapId={state.mapId}/>}
-              {state.type === "KML" && <KeyholeDisplay file={state.file} mapId={state.mapId}/>}
+              {state.type === "GeoJSON" && <GeoJSONDisplay file={state.file} />}
+              {state.type === "KML" && <KeyholeDisplay file={state.file}/>}
+              {state.type === "Shapefile" && <ShapefileDisplay file={state.file}/>}
             </div>
             : null}
         </div>
