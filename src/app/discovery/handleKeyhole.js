@@ -2,15 +2,19 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useState, useRef } from "react";
 import tj from 'togeojson';
-// import { DOMParser } from 'xmldom';
 
 export default function KeyholeDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
-  const markers = useRef([]); 
+  const markers = useRef([]);
 
-
+  const fitMapToGeoJsonBounds = () => {
+    if (mapRef.current && geoJsonLayerRef.current) {
+      const bounds = geoJsonLayerRef.current.getBounds();
+      mapRef.current.fitBounds(bounds);
+    }
+  };
 
   useEffect(() => {
     const reader = new FileReader();
@@ -18,18 +22,9 @@ export default function KeyholeDisplay(props) {
     reader.onload = function (event) {
       try {
         let jsonData;
-          console.log(typeof(event.target.result));
-          const parser = new DOMParser();
-          const kml = parser.parseFromString(event.target.result, 'text/xml');
-        //   console.log(event.target);
-          console.log("Bewtween parse");
-          console.log(typeof(kml));
-
-        //   const kml = new DOMParser().parseFromString(fs.readFileSync("foo.kml", "utf8"));
-
-          jsonData = tj.kml(kml);
-          console.log("Successfully parsed from kml to geojson");
-        
+        const parser = new DOMParser();
+        const kml = parser.parseFromString(event.target.result, 'text/xml');
+        jsonData = tj.kml(kml);
         setGeoJsonData(jsonData);
       } catch (error) {
         console.error("Error parsing file:", error);
@@ -41,7 +36,7 @@ export default function KeyholeDisplay(props) {
 
   useEffect(() => {
     if (!mapRef.current) {
-      mapRef.current = L.map("map" + props.mapId).setView([0, 0], 2);
+      mapRef.current = L.map("map" + props.mapId);
     }
 
     if (geoJsonLayerRef.current) {
@@ -53,7 +48,6 @@ export default function KeyholeDisplay(props) {
     markers.current = [];
 
     if (geoJsonData) {
-        console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           const label = L.marker(layer.getBounds().getCenter(), {
@@ -69,8 +63,18 @@ export default function KeyholeDisplay(props) {
       });
 
       geoJsonLayerRef.current.addTo(mapRef.current);
+
+      fitMapToGeoJsonBounds();
     }
   }, [geoJsonData]);
+
+  useEffect(() => {
+    window.addEventListener("resize", fitMapToGeoJsonBounds);
+
+    return () => {
+      window.removeEventListener("resize", fitMapToGeoJsonBounds);
+    };
+  }, []);
 
   return (
     <div id={"map" + props.mapId} style={{ width: "100%", height: "600px" }}></div>

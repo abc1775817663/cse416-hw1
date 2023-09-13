@@ -46,12 +46,12 @@ export default function GeoJSONDisplay(props) {
         onEachFeature: (feature, layer) => {
           var label = L.marker([feature.properties.label_y, feature.properties.label_x], {
             icon: L.divIcon({
-                className: 'countryLabel',
-                html: feature.properties.name,
-                iconSize: [1000, 0],
-                iconAnchor: [0, 0]
+              className: 'countryLabel',
+              html: feature.properties.name,
+              iconSize: [1000, 0],
+              iconAnchor: [0, 0]
             })
-        }).addTo(mapRef.current);
+          }).addTo(mapRef.current);
           // if(feature.properties && feature.properties.name)
           // {
           //   let marker = new L.marker([feature.properties.label_y, feature.properties.label_x], {opacity: 0.01});
