@@ -2,18 +2,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, install the package that you need:
+First, navigate to the `/cse416-hw1` folder and install the necessary packages:
 
 ```
-npm install next
-npm install shpjs
-npm install --save togeojson xmldom
+npm install
 ```
 
 run the development server:
-
 ```
 npm run dev
 ```
 
-Open [http://localhost:3000/discovery](http://localhost:3000/discovery) with your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
