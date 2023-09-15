@@ -46,17 +46,23 @@ export default function KeyholeDisplay(props) {
     markers.current = [];
 
     if (geoJsonData) {
+      console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
-          const label = L.marker(layer.getBounds().getCenter(), {
-            icon: L.divIcon({
-              className: 'countryLabel',
-              html: feature.properties.name,
-              iconSize: [1000, 0],
-              iconAnchor: [0, 0]
-            })
-          }).addTo(mapRef.current);
-          markers.current.push(label);
+          if (feature.properties.name) {
+            var htmlData = feature.properties.name;
+          }else{
+            htmlData = "Area: " + feature.properties.shape_area;
+          }
+            const label = L.marker(layer.getBounds().getCenter(), {
+              icon: L.divIcon({
+                className: 'countryLabel',
+                html: htmlData,
+                iconSize: [1000, 0],
+                iconAnchor: [0, 0]
+              })
+            }).addTo(mapRef.current);
+            markers.current.push(label);
         }
       });
 
